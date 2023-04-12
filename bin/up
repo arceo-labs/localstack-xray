@@ -1,0 +1,8 @@
+#!/bin/zsh
+"$(dirname $0)/down"
+
+echo 'docker compose --ansi never up --detach'
+docker compose --ansi never up --detach
+sleep 4
+echo 'docker compose logs localstack'
+docker compose logs localstack

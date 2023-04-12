@@ -1,0 +1,28 @@
+#!/bin/zsh
+
+cd "$(dirname $0)/.." || exit 1
+if ! yarn run build; then
+  echo 1>&2 Error building
+  exit 1
+fi
+
+cd "./tf/env.local" || exit 1
+
+if [ -f terraform.tfstate ]; then rm terraform.tfstate; fi
+if [ -f localstack.tfp ]; then rm localstack.tfp; fi
+
+if ! AWS_PROFILE=localstack TF_LOG=INFO tflocal init; then
+  echo 1>&2 Error initializing terraform
+  exit 1
+fi
+
+if ! TEST_AWS_ACCOUNT_ID=123 tflocal plan -out localstack.tfp; then
+  echo 1>&2 Error creating plan
+  exit 1
+fi
+
+
+if ! tflocal apply localstack.tfp; then
+  echo 1>&2 Error applying plan
+  exit 1
+fi

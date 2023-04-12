@@ -1,0 +1,20 @@
+#!/bin/zsh
+cd "$(dirname $0)/.." || exit 1
+
+touch -t "$(date -v -23H +%Y%m%d%H%M.%S)" .worker-secret0
+# shellcheck disable=SC2039
+if [ ! -f .worker-secret ] || [ .worker-secret -ot .worker-secret0 ]; then
+  echo 1>&2 "Refreshing worker token"
+  date +%Y%m%d%H%M.%S >.worker-secret
+fi
+rm .worker-secret0
+WORKER_TOKEN="$(cat .worker-secret)"
+WORKER_APIGW="$(awslocal apigateway get-rest-apis | jq -rM ".items[0].id")"
+if [ "$WORKER_APIGW" = null ]; then
+  echo 1>&2 "No API Gateway found"
+  exit 1
+fi
+curl -v -X GET -H "Authorization: Bearer ${WORKER_TOKEN}" \
+  -H "Content-Type: application/json" \
+  --data-binary '{"type": "ping"}' \
+  "http://localhost:4566/restapis/${WORKER_APIGW}/api/_user_request_/worker"

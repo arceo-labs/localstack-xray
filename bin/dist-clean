@@ -1,0 +1,6 @@
+#!/bin/zsh
+cd "$(dirname $0)/.." || exit 1
+
+find . -depth 1 -name '*.log' -print0 | xargs -0 rm
+rm -rf ./.worker-secret ./dist ./venv ./volume
+rm -rf tf/env.local/{.terraform,.terraform.lock.hcl,localstack.tfp,terraform.tfstate}

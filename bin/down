@@ -1,0 +1,6 @@
+#!/bin/zsh
+cd "$(dirname $0)/.." || exit 1
+docker compose --ansi never down -v
+docker ps -f status=exited -q | xargs -t docker rm
+docker volume ls | perl -ne 'print "$1\n" if (/local\s+(.*)/);' | xargs -t docker volume rm
+if [ -d ./volume ]; then rm -r ./volume; fi

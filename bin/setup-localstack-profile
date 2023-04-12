@@ -1,0 +1,15 @@
+#!/bin/zsh
+if ! [ -d ~/.aws ]; then
+  echo 1>&2 "Creating ~/.aws"
+  mkdir ~/.aws
+  chmod 700 ~/.aws
+fi
+if ! [ -f ~/.aws/config ]; then
+    echo 1>&2 "Creating ~/.aws/config"
+    touch ~/.aws/config
+    chmod 600 ~/.aws/config
+fi
+if ! grep --fixed-strings --silent "[profile localstack]" ~/.aws/config; then
+    echo 1>&2 "Adding profile localstack to ~/.aws/config"
+    (echo; echo "[profile localstack]"; echo "region = us-east-1"; echo "output = json") >> ~/.aws/config
+fi
