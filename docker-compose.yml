@@ -17,6 +17,7 @@ services:
       - PERSISTENCE=${PERSISTENCE-}
       - DOCKER_HOST=unix:///var/run/docker.sock
       - LS_LOG=${LS_LOG-info}
+      - LAMBDA_DOCKER_FLAGS=-e LOCALSTACK_ENABLE_XRAY_TELEMETRY=1
     volumes:
       - "./volume:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
