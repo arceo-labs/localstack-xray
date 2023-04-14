@@ -1,6 +1,15 @@
 #!/bin/zsh
 cd "$(dirname $0)/.." || exit 1
 
+if [ -z "${VIRTUAL_ENV}" ]; then
+  if [ -f ./venv/bin/activate ]; then
+    . ./venv/bin/activate
+  else
+    echo 1>&2 "No virtual environment found"
+    exit 1
+  fi
+fi
+
 touch -t "$(date -v -23H +%Y%m%d%H%M.%S)" .worker-secret0
 # shellcheck disable=SC2039
 if [ ! -f .worker-secret ] || [ .worker-secret -ot .worker-secret0 ]; then

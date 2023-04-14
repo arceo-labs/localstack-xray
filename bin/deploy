@@ -6,6 +6,15 @@ if ! yarn run build; then
   exit 1
 fi
 
+if [ -z "${VIRTUAL_ENV}" ]; then
+  if [ -f ./venv/bin/activate ]; then
+    . ./venv/bin/activate
+  else
+    echo 1>&2 "No virtual environment found"
+    exit 1
+  fi
+fi
+
 cd "./tf/env.local" || exit 1
 
 if [ -f terraform.tfstate ]; then rm terraform.tfstate; fi
@@ -20,7 +29,6 @@ if ! TEST_AWS_ACCOUNT_ID=123 tflocal plan -out localstack.tfp; then
   echo 1>&2 Error creating plan
   exit 1
 fi
-
 
 if ! tflocal apply localstack.tfp; then
   echo 1>&2 Error applying plan

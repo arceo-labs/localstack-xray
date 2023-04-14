@@ -25,13 +25,11 @@ bin/up
 
 ### Build and deploy the lambda
 ```shell
-if [ -z "${VIRTUAL_ENV}" ]; then . venv/bin/activate; fi
 bin/deploy
 ```
 
 ### Run the lambda via the api gateway
 ```shell
-if [ -z "${VIRTUAL_ENV}" ]; then . venv/bin/activate; fi
 bin/invoke-worker
 ```
 
